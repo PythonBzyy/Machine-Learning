@@ -1,14 +1,15 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
-from utils import kernels, utils
+from .. import kernels
+from .. import utils
 
 
 class SVC:
 
     def __init__(self, max_iter=100, C=1.0, tol=1e-4, kernel=None, degree=3, gamma=0.1):
         """
-        
+        定义SVC类
         :param max_iter: 最大迭代次数
         :param C: 正则化系数
         :param tol: 提前中止训练时的误差上限
@@ -40,45 +41,46 @@ class SVC:
         """
         初始化参数
         """
-        self.X = features
-        self.y = labels
+        self.X = np.array(features)  # X: [N, D]
+        self.y = np.array(labels)  # y: [N, ]
+        self.w = None  # w: [D, ]
+        self.b = .0  # b: scalar
         self.n_samples, self.n_features = features.shape
-        self.w = None
-        self.b = .0
-        self.alpha = np.zeros(self.n_samples)
-        self.E = [self._E(i) for i in range(self.n_samples)]
+        self.alpha = np.zeros(self.n_samples)  # alpha: [N, ]
+        # self.E = np.zeros(self.n_samples)
+        self.E = np.array([self._E(i) for i in range(self.n_samples)])  # E: [N, ]
 
     def _f(self, i):
         """
-        计算 f(x)
+        计算 f(x): f(x) = wx + b
         :param i:
         :return:
         """
-        x = np.array([self.X[i]])
-        if len(self.support_vectors) == 0:
-            if x.ndim <= 1:
-                return 0
-            return np.zeros((x.shape[:-1]))
-        else:
-            if x.ndim <= 1:
-                wx = 0
-            else:
-                wx = np.zeros((x.shape[:-1]))
-            for j in range(len(self.support_vectors)):
-                wx += self.kernel([self.X[i]], [self.support_vector_x[j]]) * \
-                      self.support_vector_alpha[j] * self.support_vector_y[j]
-            return wx + self.b
+        # x = self.X[i]
+        # if len(self.support_vectors) == 0:
+        #     if x.ndim <= 1:
+        #         return 0
+        #     return np.zeros((x.shape[:-1]))
+        # else:
+        #     if x.ndim <= 1:
+        #         wx = 0
+        #     else:
+        #         wx = np.zeros((x.shape[:-1]))
+        #     for j in range(len(self.support_vectors)):
+        #         wx += self.kernel([self.X[i]], [self.support_vector_x[j]]) * \
+        #               self.support_vector_alpha[j] * self.support_vector_y[j]
+        #     return wx + self.b
 
-        # r = self.b
-        # for j in range(self.n_features):
-        #     r += self.alpha[j] * self.y[j] * self.kernel(self.X[i], self.X[j])
-        # return r
+        r = self.b
+        for j in range(self.n_features):
+            r += self.alpha[j] * self.y[j] * self.kernel(self.X[i], self.X[j])
+        return r
 
     def _E(self, i):
         """
         计算E，E为g(x)对输入x的预测值和y的差
         """
-        return self._f(i) - self.y[i]
+        return self._f(i) - self.y[i]  # scalar
 
     def _kkt_condition(self, i):
         """
@@ -148,9 +150,9 @@ class SVC:
                         H = min(self.C, self.C + self.alpha[j] - self.alpha[i])
 
                     # eta = K_11 + K_22 -2K_12
-                    eta = self.kernel([self.X[i]], [self.X[i]]) + \
-                          self.kernel([self.X[j]], [self.X[j]]) - 2 * \
-                          self.kernel([self.X[i]], [self.X[j]])
+                    eta = self.kernel(self.X[i], self.X[i]) + \
+                          self.kernel(self.X[j], self.X[j]) - 2 * \
+                          self.kernel(self.X[i], self.X[j])
                     if eta < 1e-3:  # 如果 X_i 和 X_j 很接近
                         continue
 
@@ -211,19 +213,16 @@ class SVC:
     def predict_proba(self, x):
         """
         软分类
-        :param x:
-        :return:
+        :param x: [N, D]
+        :return: [N, 2]
         """
-        r = self.b
-        for j in range(self.n_features):
-            r += self.alpha[j] * self.y[j] * self.kernel(x, [self.X[j]])
-        return utils.sigmoid(r)
+        return np.c_[1.0 - utils.sigmoid(self._f(x)), utils.sigmoid(self._f(x))]
 
     def predict(self, x):
         """
         硬分类
-        :param x:
-        :return:
+        :param x: [N, D]
+        :return: [N, ]
         """
         proba = self.predict_proba(x)
         return (proba >= 0.5).astype(int)
