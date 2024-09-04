@@ -31,8 +31,8 @@ datasets/lifesat/lifesat.csv
 datasets/spam
 datasets/words
 datasets/jsb_chorales
-*.jpg
-*.png
+# *.jpg
+# *.png
 *.mp3
 *.mp4
 *.pdf
