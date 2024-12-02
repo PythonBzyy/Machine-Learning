@@ -695,7 +695,7 @@ ${\color{blue}\textbf{likelihood term}}: \mathbb E_{q(\boldsymbol f_X)} [\log p(
 $$
 
 $$
- 
+
 
 
 
@@ -717,12 +717,10 @@ $$
 
 ## Reference
 
-[1] Book 2.18.5
+[1] [Scalable Variational Gaussian Process Classification](./reference/Scalable Variational Gaussian Process Classification.pdf)
 
-[2] [Scalable Variational Gaussian Process Classification](./reference/Scalable Variational Gaussian Process Classification.pdf)
+[2] [稀疏高斯过程及其变分推断. 西山晴雪的知识笔记]([🔥 稀疏高斯过程及其变分推断 | 西山晴雪的知识笔记 (xishansnow.github.io)](https://xishansnow.github.io/posts/1aa0965f.html))
 
-[3] [稀疏高斯过程及其变分推断. 西山晴雪的知识笔记]([🔥 稀疏高斯过程及其变分推断 | 西山晴雪的知识笔记 (xishansnow.github.io)](https://xishansnow.github.io/posts/1aa0965f.html))
+[3] [A Tutorial on Sparse Gaussian Processes and Variational Inference](./reference/A Tutorial on Sparse Gaussian Processes and Variational Inference.pdf)
 
-[4] [A Tutorial on Sparse Gaussian Processes and Variational Inference](./reference/A Tutorial on Sparse Gaussian Processes and Variational Inference.pdf)
-
-[5] [Scalable Variational Gaussian Process Classification](./reference/Scalable Variational Gaussian Process Classification.pdf)
+[4] [Scalable Variational Gaussian Process Classification](./reference/Scalable Variational Gaussian Process Classification.pdf)
