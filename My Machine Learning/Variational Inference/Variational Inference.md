@@ -101,9 +101,22 @@ $$
 
 ### View 2: physics
 
-==TODO==
+物理学观点：最小化**变分自由能（variational free energy，VFE）**。
 
-
+定义 $\mathcal E_{\boldsymbol \theta}(\boldsymbol z) = -\log p_{\boldsymbol\theta}(\boldsymbol x, \boldsymbol z)$ 为能量，则可以重写 $\mathcal L(\boldsymbol\theta, \boldsymbol\psi | \boldsymbol x)$
+$$
+\begin{aligned}
+	\mathcal L(\boldsymbol\theta, \boldsymbol\psi | \boldsymbol x) 
+	&= \mathbb E_{q_{\boldsymbol\psi}(\boldsymbol z)}[\mathcal E_{\boldsymbol \theta}(\boldsymbol z)] - \mathbb H[q_{\boldsymbol\psi}] \\
+	&= \text{expected energy − entropy}
+\end{aligned}
+$$
+在物理学中，这称为变分自由能（variational free energy，VFE），是自由能（free energy，FE，$-\log p_{\boldsymbol\theta}(\boldsymbol x)$）的上限，因为
+$$
+\mathbb{KL}[q_{\boldsymbol\psi}(\boldsymbol z) \parallel p_{\boldsymbol\theta}(\boldsymbol z | \boldsymbol x)] = \mathcal L(\boldsymbol\theta, \boldsymbol\psi | \boldsymbol x) + \log p_{\boldsymbol \theta}(\boldsymbol x) \geq 0 \\
+\therefore\quad \underbrace{\mathcal L(\boldsymbol\theta, \boldsymbol\psi | \boldsymbol x)}_{\text{VFE}} \geq \underbrace{- \log p_{\boldsymbol \theta}(\boldsymbol x)}_{\text{FE}}
+$$
+VI 相当于最小化 VFE，如果达到 $-\log p_{\boldsymbol\theta}(\boldsymbol x)$ 的最小值，那么 $\mathbb{KL}=0$ ，则近似后验是精确的。
 
 
 
@@ -161,52 +174,27 @@ EM 中的目标是最大化 $\log p(\boldsymbol x | \boldsymbol \theta)$ ，使 
 
 
 
+## Learning
 
-## Coordinate ascent VI
+[**Cooridinate Ascent VI, CAVI**](./Cooridinate Ascent VI.md)
 
-**坐标上升VI（Coordinate ascent VI，CAVI）**，基于**平均场近似（mean field approximation）**。使用坐标上升优化方案，是基于梯度的 VI 的替代方案。
-
-可以首先将潜在变量 $\boldsymbol z$ 拆分成 $M$ 个子变量 $\{z_1, z_2, \dots, z_M\}$ ，VI 中的一个常见近似是假设所有潜在变量都是独立的，即
-$$
-q_{\boldsymbol \psi}(\boldsymbol z) = \prod_{j=1}^M q_j(z_j)
-$$
-其中 $q_j(z_j) = q_{\boldsymbol\psi_j}(z_j)$ ，$\boldsymbol \psi_j$ 是第 $j$ 个隐变量的变分参数。于是 ELBO 写为：
-$$
-\begin{aligned}
-	\mathcal L(\boldsymbol\psi, \boldsymbol \theta | \boldsymbol x) &= \int_{\boldsymbol z} q_{\boldsymbol\psi}(\boldsymbol z) \log \frac{p_{\boldsymbol \theta}(\boldsymbol x, \boldsymbol z)}{q_{\boldsymbol\psi}(\boldsymbol z)}\,\mathrm{d}\boldsymbol z \\
-	&= \int_{\boldsymbol z} q_{\boldsymbol\psi}(\boldsymbol z) \log p(\boldsymbol x, \boldsymbol z)\,\mathrm{d} \boldsymbol z -\int_{\boldsymbol z} q_{\boldsymbol \psi}(\boldsymbol z) \log q_{\boldsymbol \psi}(\boldsymbol z)\,\mathrm{d} \boldsymbol z \\
-	&= \underbrace{\int_{\boldsymbol z} \prod_{j=1}^M q_j(z_j) \log p(\boldsymbol x, \boldsymbol z)\,\mathrm{d}\boldsymbol z}_{\text{part 1}} - \underbrace{\int_{\boldsymbol z} \prod_j^M q_j(z_j) \sum_j^M \log q_j(z_j) \,\mathrm{d}\boldsymbol z}_{\text{part 2}}
-\end{aligned}
-$$
-这里已经获得了 ELBO 的表达式，接下来就需要对于每个 $\boldsymbol \psi_j$​ 进行参数优化。
-
-**part 1：**
-$$
-\begin{aligned}
-	\text{part 1} &= \int_{\boldsymbol z} \prod_{j=1}^M q_j(z_j) \log p(\boldsymbol x, \boldsymbol z)\,\mathrm{d}\boldsymbol z \\
-	&= \idotsint_{z_{1:M}} \prod_{j=1}^M q_j(z_j) \log p(\boldsymbol x, \boldsymbol z)\,\mathrm{d}\boldsymbol z_{1:M} \\
-\end{aligned}
-$$
-从积分中提取特定的 $q_i$ ：
-$$
-\begin{aligned}
-	\text{part 1}_{q_i} &\equiv \text{part 1} \\
-	&= \int_{z_i} q_i(z_i) \left[\idotsint_{z_{1:M\backslash i}} \prod_{j=1\backslash i}^M q_j(z_j) \log p(\boldsymbol x, \boldsymbol z)\,\mathrm{d}\boldsymbol z_{1:M\backslash i} \right]\,\mathrm{d}z_i \\
-	&= \int_{z_i} q_j(z_j) \bigg[\mathbb{E}_{z_{1:M\backslash i}}\big[\log p(\boldsymbol x, \boldsymbol z)\big] \bigg]\,\mathrm{d}z_i
-\end{aligned}
-$$
-**part 2：**
-$$
-\begin{aligned}
-	\text{part 2} &= 
-\end{aligned}
-$$
-
-
----
+[**Gradient-based VI, GVI**](./Gradient-based VI.md)
 
 
 
-## Gradient-based VI
 
-基于梯度的VI（Gradient-based VI）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
